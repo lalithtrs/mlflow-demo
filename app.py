@@ -13,9 +13,12 @@ from sklearn.linear_model import ElasticNet
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
+import dagshub
 import mlflow
 import mlflow.sklearn
 from mlflow.models import infer_signature
+
+dagshub.init(repo_owner='lalithtrs', repo_name='mlflow-demo', mlflow=True)
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
@@ -77,6 +80,8 @@ if __name__ == "__main__":
         predictions = lr.predict(train_x)
         signature = infer_signature(train_x, predictions)
 
+        remote_server_url = "https://dagshub.com/lalithtrs/mlflow-demo.mlflow"
+        mlflow.set_tracking_uri(remote_server_url)
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
         # Model registry does not work with file store
